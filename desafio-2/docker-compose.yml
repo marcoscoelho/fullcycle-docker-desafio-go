@@ -1,0 +1,47 @@
+version: '3'
+services:
+  db:
+    env_file: .env
+    image: mysql:5.7
+    command: --innodb-use-native-aio=0
+    container_name: db
+    restart: always
+    tty: true
+    volumes:
+      - ./mysql/:/var/lib/mysql/
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
+    networks:
+      - node-network
+  app:
+    env_file: .env
+    image: marcoscoelho/codeeducation-app
+    build: node
+    container_name: app
+    networks:
+      - node-network
+    volumes:
+      - ./node/:/usr/src/app/
+      - /usr/src/app/node_modules
+    tty: true
+    expose:
+      - ${SERVER_PORT}
+    ports:
+      - "${APP_PORT}:${SERVER_PORT}"
+    depends_on:
+       - db
+  proxy:
+    env_file: .env
+    image: marcoscoelho/codeeducation-proxy
+    build: nginx
+    container_name: proxy
+    networks:
+      - node-network
+    ports: 
+      - "${PROXY_PORT}:80"
+    depends_on:
+       - app
+networks:
+  node-network:
+    driver: bridge

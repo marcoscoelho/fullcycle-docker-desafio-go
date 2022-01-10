@@ -1,0 +1,17 @@
+{
+  "name": "nodedb",
+  "author": {
+    "name": "Marcos Coelho"
+  },
+  "scripts": {
+    "start": "node ./src/app.js",
+    "migrate": "node ./src/migrate.js",
+    "migrate:status": "node ./src/migrate.js status",
+    "migrate:undo": "node ./src/migrate.js undo"
+  },
+  "dependencies": {
+    "ejs": "^3.1.6",
+    "express": "^4.17.2",
+    "mysql": "^2.18.1"
+  }
+}
